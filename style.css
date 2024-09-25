@@ -1,21 +1,89 @@
-.gallery-img {
-    max-width: 100%;
-    height: auto;
-    width: 200px; /* Adjust this value to control the image size */
-    display: block;
-    margin: 0 auto; /* Centers the image within its column */
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", Sans-serif;
 }
-.welcome {
-    background-image: url('https://example.com/car-detailing.jpg'); /* Replace with your image URL */
-    background-size: cover;
-    color: white;
-    padding: 100px 0;
+
+.container-video {
+    position: relative; /* Allows absolute positioning of the navbar */
+    height: 100vh; /* Ensures the video takes full height of the viewport */
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.content {
+    position: relative; /* Keeps content on top of the video */
     text-align: center;
+    z-index: 1; /* Ensure content appears above the video */
+    color: #fff;
 }
-.welcome h1 {
-    font-size: 3rem;
-    font-weight: bold;
+
+.content h1 {
+    font-size: 95px;
+    color: #fff;
+    margin-bottom: 50px;
 }
+
+.content p {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.content a {
+    font-size: 23px;
+    color: #fff;
+    text-decoration: none;
+    border: 2px solid #fff;
+    padding: 15px 25px;
+    border-radius: 50px;
+    transition: 0.3s;
+}
+
+.content a:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.background-clip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video covers the entire container without distortion */
+    z-index: -1; /* Sends video to the background */
+}
+
+@media (max-width: 768px) {
+    .content h1 {
+        font-size: 50px;
+    }
+
+    .content p {
+        font-size: 18px;
+    }
+
+    .content a {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 576px) {
+    .content h1 {
+        font-size: 40px;
+    }
+
+    .content p {
+        font-size: 16px;
+    }
+
+    .content a {
+        font-size: 16px;
+    }
+}
+
 .services img {
     width: 100%;
     height: auto;
@@ -86,82 +154,25 @@
     right: 300px;
 }
 /* Custom Navbar Styles */
-.custom-navbar {
-    display: flex;
-    background-color: black;
-    padding: 10px;
-    align-items: center; /* Center items vertically within the navbar */
+.nav-link {
+    border-radius: 30px; /* More rounded for a modern look */
+    padding: 10px 20px; /* Adjust padding as desired */
+    margin-left: 8px;
+    text-transform: uppercase; /* Makes the text uppercase */
+    font-weight: 500;
+    color: #fff !important;
+    transition: all 0.3s ease; /* Smooth transitions for hover effects */
 }
 
-/* Logo Styles */
-.logo {
-    height: 120px;
-    margin-left:  185px;
+.nav-link:hover {
+    background-color: #FFB600; /* Brighten yellow on hover for dynamic feel */
+    color: #1a1a1d; /* Maintain contrast on hover */
 }
 
-/* Container to center items horizontally */
-.navbar-content {
-    display: flex;
-    justify-content: center; /* Center items horizontally within the container */
-    flex-grow: 1; /* Allow the container to grow and take up remaining space */
-}
-
-/* Navbar Item Styles */
-.navbar-item {
-    background-color: #FFB600; /* Yellow background */
-    margin: 0 5px; /* Slight space between items */
-    padding: 2px 16px; /* Adjust padding to squish the height */
-    border-radius: 15px; /* Rounded corners */
-    text-align: center; /* Center text */
-    cursor: pointer; /* Pointer cursor for clickable area */
-    line-height: 1.2; /* Adjust line height for vertical centering */
-}
-
-.navbar-item a {
-    display: block; /* Ensure the link fills the entire div */
-    width: 100%;
-    height: 100%;
-    color: black; /* Normal text color */
-    text-decoration: none; /* Remove default link styling */
-    font-family: "Montserrat", Sans-serif;
-    font-size: 16px; /* Adjust font size */
-    font-weight: 400; /* Regular weight for normal text */
-    text-transform: none; /* No text transformation */
-    text-align: center; /* Center text within the link */
-    line-height: 1.5; /* Center text vertically */
-}
 /* Active Navbar Item Styles */
-.navbar-item.active {
-    background-color: white; /* White background for the active item */
-    color: black; /* Black text color for better visibility on white background */
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .navbar-content {
-        flex-direction: column; /* Stack items vertically on small screens */
-        align-items: center; /* Center items horizontally */
-    }
-
-    .navbar-item {
-        width: 100%; /* Full width for each item on small screens */
-        margin: 5px 0; /* Vertical margin for stacked items */
-        padding: 10px 20px; /* Adjust padding for smaller screens */
-    }
-
-    .navbar-item a {
-        font-size: 18px; /* Slightly larger font size on mobile */
-    }
-
-    .logo {
-        margin-right: 10px; /* Adjust spacing for small screens */
-    }
-}
-
-@media (max-width: 576px) {
-    .navbar-item a {
-        font-size: 16px; /* Adjust font size for very small screens */
-    }
+.nav-link.active {
+    background-color: #1a1a1d; /* Dark background for active item */
+    color: #FFCC00; /* Yellow text for visual pop */
 }
 
 

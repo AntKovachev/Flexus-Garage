@@ -15,4 +15,9 @@ class Customer extends Model
         'name',
         'phone_number',
     ];
+
+    public function dates()
+    {
+        return $this->hasMany(Reservation::class, 'reservation_id');
+    }
 }

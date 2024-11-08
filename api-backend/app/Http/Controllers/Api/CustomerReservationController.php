@@ -26,7 +26,7 @@ class CustomerReservationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'date' => 'required|date',
+            'date' => 'required|date_format:d.m.Y',
             'time' => 'required|date_format:H:i',
         ]);
 
@@ -45,9 +45,9 @@ class CustomerReservationController extends Controller
         ], 200);
     }
 
-    public function show()
+    public function show(Reservation $reservation)
     {
-
+        return new ReservationResource($reservation);
     }
 
     public function update()

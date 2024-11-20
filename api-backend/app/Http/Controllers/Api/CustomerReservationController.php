@@ -26,8 +26,8 @@ class CustomerReservationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'date' => 'required|date_format:d.m.Y',
-            'time' => 'required|date_format:H:i',
+            'reservation_date' => 'required|date_format:d.m.Y',
+            'reservation_time' => 'required|date_format:H:i',
         ]);
 
         if ($validator->fails()) {

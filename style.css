@@ -175,5 +175,61 @@
     color: #FFCC00; /* Yellow text for visual pop */
 }
 
-
-
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+  }
+  
+  .card {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.103);
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(30px);
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    max-width: 450px;
+    min-height: 450px;
+    display: inline-block;
+  }
+  
+  .cardImage {
+    position: absolute;
+    border-radius: 10px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+  }
+  
+  .cardContent {
+    position: relative;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    text-align: center;
+    border-radius: 10px;
+    top: 200px;
+    z-index: 1;
+    opacity: 0; /* Initially hidden */
+    color: black;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s ease; /* Fade-in effect */
+  }
+  
+  .card:hover .cardTitle,
+  .card:hover .cardContent {
+    opacity: 1; /* Text becomes visible on hover */
+  }
+  
+  @media (max-width: 800px) {
+    .grid {
+      grid-template-columns: 1fr; /* Single column layout on smaller screens */
+    }
+    .card {
+      max-width: 100%; /* Expand card width for smaller screens */
+    }
+  }

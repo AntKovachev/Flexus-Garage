@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReservationResource;
+use App\Models\Customer;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,7 +13,7 @@ class CustomerReservationController extends Controller
 {
     public function index()
     {
-        $reservations = Reservation::get();
+        $reservations = Reservation::with('customer')->get();
 
         if ($reservations->count() > 0) {
             return ReservationResource::collection($reservations);
@@ -25,9 +26,11 @@ class CustomerReservationController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'reservation_date' => 'required|date_format:d.m.Y',
-            'reservation_time' => 'required|date_format:H:i',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'phone_number' => 'required|string|min:10',
+            'reservation_date' => 'required|date_format:Y-m-d',
+            'reservation_time' => 'required|date_format:H:i:s',
         ]);
 
         if ($validator->fails()) {
@@ -37,7 +40,16 @@ class CustomerReservationController extends Controller
             ], 422);
         }
 
-        $reservation = Reservation::create($validator->validated());
+        $customer = Customer::create([
+            'name' => $request->name,
+            'phone_number' => $request->phone_number,
+        ]);
+
+        $reservation = Reservation::create([
+            'reservation_id' => $customer->id,
+            'reservation_date' => $request->reservation_date,
+            'reservation_time' => $request->reservation_time,
+        ]);
 
         return response()->json([
             'message' => 'Reservation created successfully',
@@ -50,13 +62,7 @@ class CustomerReservationController extends Controller
         return new ReservationResource($reservation);
     }
 
-    public function update()
-    {
+    public function update() {}
 
-    }
-
-    public function destroy()
-    {
-
-    }
+    public function destroy() {}
 }

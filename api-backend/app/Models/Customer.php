@@ -9,14 +9,14 @@ class Customer extends Model
 {
     use HasFactory;
 
-    protected $table = 'customer_reservation';
+    protected $table = 'customer_reservations';
 
     protected $fillable = [
         'name',
         'phone_number',
     ];
 
-    public function dates()
+    public function reservations()
     {
         return $this->hasMany(Reservation::class, 'reservation_id');
     }

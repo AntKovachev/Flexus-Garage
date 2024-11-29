@@ -17,7 +17,7 @@ class Reservation extends Model
         'reservation_time',
     ];
 
-    public function reservation() {
+    public function customer() {
         return $this->belongsTo(Customer::class, 'reservation_id');
     }
 }

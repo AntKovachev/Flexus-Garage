@@ -20,8 +20,6 @@ class CustomerReservationController extends Controller
         } else {
             return response()->json(['message' => 'No record available'], 200);
         }
-
-        // This only returns one of the tables information (reservation_dates). In this table only the date is being displayed. We need to also return the table with the names.
     }
 
     public function store(Request $request)
@@ -62,7 +60,47 @@ class CustomerReservationController extends Controller
         return new ReservationResource($reservation);
     }
 
-    public function update() {}
+    // update function returns null for name and phone number on customer
+    public function update(Request $request, Reservation $reservation)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'phone_number' => 'required|string|min:10',
+            'reservation_date' => 'required|date_format:Y-m-d',
+            'reservation_time' => 'required|date_format:H:i:s',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'All fields are mandatory',
+                'error' => $validator->messages(),
+            ], 422);
+        }
+
+        $customer = $reservation->customer;
+
+        if (!$customer) {
+            return response()->json([
+                'message' => 'Associated customer not found.',
+            ], 404);
+        }
+
+        $customer->update([
+            'name' => $request->name,
+            'phone_number' => $request->phone_number,
+        ]);
+
+        $reservation->update([
+            'reservation_id' => $customer->id,
+            'reservation_date' => $request->reservation_date,
+            'reservation_time' => $request->reservation_time,
+        ]);
+
+        return response()->json([
+            'message' => 'Reservation updated successfully',
+            'data' => new ReservationResource($reservation),
+        ], 200);
+    }
 
     public function destroy() {}
 }

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone_number');
+            $table->date('reservation_date');
+            $table->time('reservation_time');
             $table->timestamps();
         });
     }

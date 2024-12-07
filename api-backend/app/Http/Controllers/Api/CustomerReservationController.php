@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReservationResource;
 use App\Models\Customer;
-use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,13 +12,10 @@ class CustomerReservationController extends Controller
 {
     public function index()
     {
-        $reservations = Reservation::with('customer')->get();
+        $customer = Customer::get();
+        return ReservationResource::collection($customer);
 
-        if ($reservations->count() > 0) {
-            return ReservationResource::collection($reservations);
-        } else {
-            return response()->json(['message' => 'No record available'], 200);
-        }
+        return response()->json(['message' => 'No record available'], 200);
     }
 
     public function store(Request $request)
@@ -41,27 +37,28 @@ class CustomerReservationController extends Controller
         $customer = Customer::create([
             'name' => $request->name,
             'phone_number' => $request->phone_number,
-        ]);
-
-        $reservation = Reservation::create([
-            'reservation_id' => $customer->id,
             'reservation_date' => $request->reservation_date,
             'reservation_time' => $request->reservation_time,
         ]);
 
         return response()->json([
             'message' => 'Reservation created successfully',
-            'data' => new ReservationResource($reservation),
+            'data' => new ReservationResource($customer),
         ], 200);
     }
 
-    public function show(Reservation $reservation)
+    public function show($id)
     {
-        return new ReservationResource($reservation);
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+        return new ReservationResource($customer);
     }
 
-    // update function returns null for name and phone number on customer
-    public function update(Request $request, Reservation $reservation)
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -77,44 +74,35 @@ class CustomerReservationController extends Controller
             ], 422);
         }
 
-        $customer = $reservation->customer;
-
-        if (!$customer) {
-            return response()->json([
-                'message' => 'Associated customer not found.',
-            ], 404);
-        }
+        $customer = Customer::find($id);
 
         $customer->update([
             'name' => $request->name,
             'phone_number' => $request->phone_number,
-        ]);
-
-        $reservation->update([
-            'reservation_id' => $customer->id,
             'reservation_date' => $request->reservation_date,
             'reservation_time' => $request->reservation_time,
         ]);
 
         return response()->json([
             'message' => 'Reservation updated successfully',
-            'data' => new ReservationResource($reservation),
+            'data' => new ReservationResource($customer),
         ], 200);
     }
 
-    public function destroy(Reservation $reservation)
-{
-    $customer = $reservation->customer;
+    public function destroy($id)
+    {
+        $customer = Customer::find($id);
 
-    if ($customer->delete()) {
+        if (!$customer) {
+            return response()->json([
+                'message' => 'Reservation does not exist',
+            ], 404);
+        }
+
+        $customer->delete();
+
         return response()->json([
-            'message' => 'Customer deleted successfully',
+            'message' => 'Reservation deleted successfully',
         ], 200);
-    } else {
-        return response()->json([
-            'message' => 'Customer does not exist or failed to delete',
-        ], 404);
     }
-}
-
 }

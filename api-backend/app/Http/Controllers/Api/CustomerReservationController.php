@@ -102,5 +102,19 @@ class CustomerReservationController extends Controller
         ], 200);
     }
 
-    public function destroy() {}
+    public function destroy(Reservation $reservation)
+{
+    $customer = $reservation->customer;
+
+    if ($customer->delete()) {
+        return response()->json([
+            'message' => 'Customer deleted successfully',
+        ], 200);
+    } else {
+        return response()->json([
+            'message' => 'Customer does not exist or failed to delete',
+        ], 404);
+    }
+}
+
 }

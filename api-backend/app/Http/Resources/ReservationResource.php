@@ -19,6 +19,7 @@ class ReservationResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'phone_number' => $this->phone_number,
+            'note' => $this->note ?? null,
             'reservation_date' => $this->reservation_date,
             'reservation_time' => $this->reservation_time,
             'created_at' => $this->created_at,

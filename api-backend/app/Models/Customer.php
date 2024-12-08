@@ -14,6 +14,7 @@ class Customer extends Model
     protected $fillable = [
         'name',
         'phone_number',
+        'note',
         'reservation_date',
         'reservation_time',
     ];

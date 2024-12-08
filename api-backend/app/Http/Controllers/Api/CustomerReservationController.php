@@ -14,8 +14,6 @@ class CustomerReservationController extends Controller
     {
         $customer = Customer::get();
         return ReservationResource::collection($customer);
-
-        return response()->json(['message' => 'No record available'], 200);
     }
 
     public function store(Request $request)
@@ -23,6 +21,7 @@ class CustomerReservationController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|min:10',
+            'note' => 'nullable|string|max:255',
             'reservation_date' => 'required|date_format:Y-m-d',
             'reservation_time' => 'required|date_format:H:i:s',
         ]);
@@ -37,6 +36,7 @@ class CustomerReservationController extends Controller
         $customer = Customer::create([
             'name' => $request->name,
             'phone_number' => $request->phone_number,
+            'note' => $request->note ?? null,
             'reservation_date' => $request->reservation_date,
             'reservation_time' => $request->reservation_time,
         ]);
@@ -63,6 +63,7 @@ class CustomerReservationController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|min:10',
+            'note' => 'nullable|string|max:255',
             'reservation_date' => 'required|date_format:Y-m-d',
             'reservation_time' => 'required|date_format:H:i:s',
         ]);
@@ -79,6 +80,7 @@ class CustomerReservationController extends Controller
         $customer->update([
             'name' => $request->name,
             'phone_number' => $request->phone_number,
+            'note' => $request->note ?? null,
             'reservation_date' => $request->reservation_date,
             'reservation_time' => $request->reservation_time,
         ]);

@@ -78,7 +78,7 @@ class AuthController extends Controller
         ], 422);
     }
 
-    public function logout(Request $request) //Have to bind the ID of the user
+    public function logout(Request $request)
     {
         $user = $request->user();
 

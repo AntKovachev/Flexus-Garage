@@ -15,46 +15,74 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validated = $request->validate([
+        $validated = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users|max:255|',
             'password' => 'required|string|min:8|confirmed'
         ]);
 
-        // if ($validated->fails()) {
-        //     return response()->json([
-        //         'message' => 'all fields must be filled.',
-        //         'error' => $validated->messages()
-        //     ], 422);
-        // }
+        if ($validated->fails()) {
+            return response()->json([
+                'error' => $validated->errors(),
+            ], 422);
+        }
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            event(new Registered($user));
+
+            Auth::login($user);
+
+            return response()->json([
+                'message' => 'User created successfully!',
+                'auth_token' => $token,
+                'user' => $user
+            ], 200);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'messages' => 'User is not created successfully!',
+                'error' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        if (Auth::attempt($credentials)) {
 
-        event(new Registered($user));
+            $user = $request->user();
+            $token = $user->createToken('auth_token')->plainTextToken;
 
-        Auth::login($user);
+            return response()->json([
+                'message' => 'Login successful!',
+                'auth_token' => $token,
+                'user' => $user,
+            ], 200);
+        }
 
         return response()->json([
-            'auth_token' => $token,
-            'user' => $user
-        ], 200);
+            'messages' => 'Unsuccessful login!',
+        ], 422);
     }
 
-    public function login()
+    public function logout(Request $request) //Have to bind the ID of the user
     {
+        $request->user()->tokens()->delete();
 
+        return response()->json([
+            'message' => 'Successfully logged out'
+        ]);
     }
-
-    public function logout()
-    {
-
-    }
-
-
 }

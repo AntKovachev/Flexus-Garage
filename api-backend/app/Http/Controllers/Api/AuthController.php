@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,10 +80,17 @@ class AuthController extends Controller
 
     public function logout(Request $request) //Have to bind the ID of the user
     {
-        $request->user()->tokens()->delete();
+        $user = $request->user();
+
+        if ($user) {
+            $user->tokens()->delete();
+            return response()->json([
+                'message' => 'Successfully logged out'
+            ]);
+        };
 
         return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+            'message' => 'User not found!'
+        ], 404);
     }
 }

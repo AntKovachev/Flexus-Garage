@@ -44,7 +44,7 @@ class CustomerReservationController extends Controller
         return response()->json([
             'message' => 'Reservation created successfully',
             'data' => new ReservationResource($customer),
-        ], 200);
+        ], 201);
     }
 
     public function show($id)
@@ -88,7 +88,7 @@ class CustomerReservationController extends Controller
         return response()->json([
             'message' => 'Reservation updated successfully',
             'data' => new ReservationResource($customer),
-        ], 200);
+        ], 201);
     }
 
     public function destroy($id)

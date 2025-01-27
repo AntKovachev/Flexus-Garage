@@ -69,4 +69,31 @@ class StoreUserTest extends TestCase
 
         $this->assertAuthenticated();
     }
+
+    public function test_if_user_can_logout()
+    {
+        User::factory()->create([
+            'email' => 'john@gmail.com',
+            'password' => bcrypt('password')
+        ]);
+
+        $loginData = [
+            'email' => 'john@gmail.com',
+            'password' => 'password',
+        ];
+
+        $loginResponse = $this->postJson('/api/login', $loginData);
+
+        $token = $loginResponse->json('auth_token');
+        
+        $logoutResponse = $this->withHeaders([
+            'Authorization' => 'Bearer', $token,
+        ])->postJson('/api/logout');
+
+        $logoutResponse
+            ->assertStatus(200)
+            ->assertJson([
+                'message' => 'Successfully logged out'
+            ]);
+    }
 }

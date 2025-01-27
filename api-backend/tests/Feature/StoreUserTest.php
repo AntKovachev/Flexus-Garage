@@ -85,9 +85,10 @@ class StoreUserTest extends TestCase
         $loginResponse = $this->postJson('/api/login', $loginData);
 
         $token = $loginResponse->json('auth_token');
-        
+
         $logoutResponse = $this->withHeaders([
-            'Authorization' => 'Bearer', $token,
+            'Authorization' => 'Bearer',
+            $token,
         ])->postJson('/api/logout');
 
         $logoutResponse

@@ -25,7 +25,7 @@ class AuthController extends Controller
         if ($validated->fails()) {
             return response()->json([
                 'error' => $validated->errors(),
-            ], 422);
+            ], 403);
         }
 
         try {
@@ -48,9 +48,9 @@ class AuthController extends Controller
             ], 201);
         } catch (\Exception $exception) {
             return response()->json([
-                'messages' => 'User is not created successfully!',
+                'message' => 'User is not created successfully!',
                 'error' => $exception->getMessage(),
-            ]);
+            ], 403);
         }
     }
 
@@ -74,8 +74,8 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'messages' => 'Unsuccessful login!',
-        ], 422);
+            'message' => 'Unsuccessful login!',
+        ], 401);
     }
 
     public function logout(Request $request)

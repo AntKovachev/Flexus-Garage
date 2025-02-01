@@ -41,6 +41,29 @@ class StoreUserTest extends TestCase
         ]);
     }
 
+    public function test_if_user_can_register_with_not_matching_password()
+    {
+        $userData = [
+            'name' => 'John',
+            'email' => 'john@gmail.com',
+            'password' => 'password',
+            'password_confirmation' => 'password1',
+        ];
+
+        $response = $this->postJson('/api/register', $userData);
+
+        $response
+            ->assertStatus(403)
+            ->assertJsonStructure([
+                'error',
+            ]);
+
+        $this->assertDatabaseMissing('users', [
+            'name' => 'John',
+            'email' => 'john@gmail.com',
+        ]);
+    }
+
     public function test_if_user_can_login()
     {
         User::factory()->create([
@@ -68,6 +91,29 @@ class StoreUserTest extends TestCase
             ]);
 
         $this->assertAuthenticated();
+    }
+
+    public function test_if_user_can_login_with_wrong_password()
+    {
+        User::factory()->create([
+            'email' => 'john@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $loginData = [
+            'email' => 'john@gmail.com',
+            'password' => 'password1',
+        ];
+
+        $response = $this->postJson('/api/login', $loginData);
+
+        $response
+            ->assertStatus(401)
+            ->assertJsonStructure([
+                'message',
+            ]);
+
+        $this->assertGuest();
     }
 
     public function test_if_user_can_logout()

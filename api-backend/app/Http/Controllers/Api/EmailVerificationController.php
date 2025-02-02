@@ -7,5 +7,18 @@ use Illuminate\Http\Request;
 
 class EmailVerificationController extends Controller
 {
-    //
+    public function show()
+    {
+
+    }
+
+    public function verify()
+    {
+
+    }
+
+    public function resend()
+    {
+        
+    }
 }

@@ -7,9 +7,18 @@ use Illuminate\Http\Request;
 
 class EmailVerificationController extends Controller
 {
-    public function show()
-    {
 
+    public function show(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Email already verified!'
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Please verify your email.'
+        ], 200);
     }
 
     public function verify()
@@ -19,6 +28,6 @@ class EmailVerificationController extends Controller
 
     public function resend()
     {
-        
+
     }
 }

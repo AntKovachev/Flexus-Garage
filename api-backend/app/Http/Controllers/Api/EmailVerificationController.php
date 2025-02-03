@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Support\Facades\URL;
-use App\Models\User;
 
 class EmailVerificationController extends Controller
 {
@@ -25,31 +23,22 @@ class EmailVerificationController extends Controller
         ], 200);
     }
 
-    public function verify(Request $request, $id, $hash)
-{
-    $user = User::find($id);
+    public function verify(EmailVerificationRequest $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Email already verified!'
+            ], 200);
+        }
 
-    if (!$user) {
-        return response()->json(['error' => 'User not found.'], 404);
+        if ($request->user()->markEmailAsVerified()) {
+            event(new Verified($request->user()));
+        }
+
+        return response()->json([
+            'message' => 'Email successfully verified!'
+        ], 200);
     }
-
-    if (!URL::hasValidSignature($request)) {
-        return response()->json(['error' => 'Invalid verification link.'], 403);
-    }
-
-    if (!hash_equals((string) $hash, sha1($user->email))) {
-        return response()->json(['error' => 'Invalid verification link.'], 403);
-    }
-
-    if ($user->hasVerifiedEmail()) {
-        return response()->json(['message' => 'Email already verified.'], 200);
-    }
-
-    $user->markEmailAsVerified();
-    event(new Verified($user));
-
-    return response()->json(['message' => 'Email successfully verified.'], 200);
-}
 
     public function resend(Request $request)
     {

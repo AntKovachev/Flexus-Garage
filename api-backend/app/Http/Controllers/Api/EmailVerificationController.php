@@ -29,27 +29,22 @@ class EmailVerificationController extends Controller
     {
         $user = User::find($id);
 
-        // Check if user exists
         if (!$user) {
             return response()->json(['error' => 'User not found.'], 404);
         }
 
-        // Validate the signed URL
         if (!URL::hasValidSignature($request)) {
             return response()->json(['error' => 'Invalid verification link.'], 403);
         }
 
-        // Validate the hash
         if (!hash_equals((string) $hash, sha1($user->email))) {
             return response()->json(['error' => 'Invalid verification link.'], 403);
         }
 
-        // Check if the user has already verified their email
         if ($user->hasVerifiedEmail()) {
             return response()->json(['message' => 'Email already verified.'], 200);
         }
 
-        // Mark the email as verified
         $user->markEmailAsVerified();
         event(new Verified($user));
 

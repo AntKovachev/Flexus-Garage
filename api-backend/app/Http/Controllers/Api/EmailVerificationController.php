@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Auth\Events\Verified;
 use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 
 class EmailVerificationController extends Controller
@@ -55,6 +55,7 @@ class EmailVerificationController extends Controller
 
         return response()->json(['message' => 'Email successfully verified.'], 200);
     }
+
 
     public function resend(Request $request)
     {

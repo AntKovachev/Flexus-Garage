@@ -19,6 +19,6 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 
 Route::controller(EmailVerificationController::class)->group(function () {
     Route::get('/email/verify', 'show')->middleware('auth:sanctum')->name('verification.notice');
-    Route::get('/email/verify/{id}/{hash}', 'verify')->middleware('auth:sanctum', 'signed')->name('verification.verify');
-    Route::post('/email/resend', 'resend')->middleware('auth:sanctum', 'throttle:6,1')->name('verification.resend');
+    Route::get('/email/verify/{id}/{hash}', 'verify')->middleware('signed')->name('verification.verify');
+    Route::post('/email/resend', 'resend')->middleware('auth:sanctum', 'throttle:6,1')->name('verification.send');
 });

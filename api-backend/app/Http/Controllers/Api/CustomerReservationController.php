@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ReservationResource;
-use App\Models\Customer;
+use App\Http\Resources\CustomerResource;
+use App\Models\CustomerReservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerReservationController extends Controller
 {
     public function index()
     {
-        $customer = Customer::get();
-        return ReservationResource::collection($customer);
+        $customer = CustomerReservation::get();
+        return CustomerResource::collection($customer);
     }
 
     public function store(Request $request)
@@ -33,29 +34,31 @@ class CustomerReservationController extends Controller
             ], 422);
         }
 
-        $customer = Customer::create([
+        $customer = CustomerReservation::create(array_merge([
             'name' => $request->name,
             'phone_number' => $request->phone_number,
             'note' => $request->note ?? null,
             'reservation_date' => $request->reservation_date,
             'reservation_time' => $request->reservation_time,
-        ]);
+        ], [
+            'user_id' => auth()->id()
+        ]));
 
         return response()->json([
             'message' => 'Reservation created successfully',
-            'data' => new ReservationResource($customer),
+            'data' => new CustomerResource($customer),
         ], 201);
     }
 
     public function show($id)
     {
-        $customer = Customer::find($id);
+        $customer = CustomerReservation::find($id);
 
         if (!$customer) {
-            return response()->json(['message' => 'Customer not found'], 404);
+            return response()->json(['message' => 'CustomerReservation not found'], 404);
         }
 
-        return new ReservationResource($customer);
+        return new CustomerResource($customer);
     }
 
     public function update(Request $request, $id)
@@ -75,7 +78,14 @@ class CustomerReservationController extends Controller
             ], 422);
         }
 
-        $customer = Customer::find($id);
+        $customer = CustomerReservation::find($id);
+
+        if($customer->user_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
 
         $customer->update([
             'name' => $request->name,
@@ -87,18 +97,24 @@ class CustomerReservationController extends Controller
 
         return response()->json([
             'message' => 'Reservation updated successfully',
-            'data' => new ReservationResource($customer),
+            'data' => new CustomerResource($customer),
         ], 201);
     }
 
     public function destroy($id)
     {
-        $customer = Customer::find($id);
+        $customer = CustomerReservation::find($id);
 
         if (!$customer) {
             return response()->json([
                 'message' => 'Reservation does not exist',
             ], 404);
+        }
+
+        if ($customer->user_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 403);
         }
 
         $customer->delete();

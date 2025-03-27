@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::apiResource('reservations', CustomerReservationController::class);
+Route::apiResource('reservations', CustomerReservationController::class)
+    ->middleware('auth:sanctum');
 
 Route::get('/user', function (Request $request) {
     return $request->user();

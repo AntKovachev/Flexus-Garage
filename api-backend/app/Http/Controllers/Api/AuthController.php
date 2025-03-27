@@ -61,7 +61,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials) && $request->user()->hasVerifiedEmail()) {
 
             $user = $request->user();
             $token = $user->createToken('auth_token')->plainTextToken;
